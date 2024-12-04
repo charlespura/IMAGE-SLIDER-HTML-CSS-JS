@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hero Image Slider</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* General styles */
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      transition: background-image 0.5s ease-in-out;
+      background-color: #000;
+      color: white;
+      box-sizing: border-box;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .intro {
+      padding: 40px 20px;
+      font-size: 24px;
+      font-weight: 600;
+      margin-top: 20px;
+      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+      transition: opacity 1s ease;
+    }
+
+    .slider {
+      position: fixed;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 220px;
+      height: 320px;
+      overflow: hidden;
+      border-radius: 15px;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+      background-color: #fff;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .slides {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .slide {
+      width: 220px;
+      height: 320px;
+      flex-shrink: 0;
+      text-align: center;
+      position: relative;
+    }
+
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 15px;
+      transform: scale(1);
+      transition: transform 0.3s ease;
+    }
+
+    .slide img:hover {
+      transform: scale(1.05);
+    }
+
+    .prev, .next {
+      position: absolute;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      z-index: 10;
+      border-radius: 50%;
+      font-size: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .prev {
+      left: 10px;
+    }
+
+    .next {
+      right: 10px;
+    }
+
+    .prev:hover, .next:hover {
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: auto;
+      background-color: #f4f4f4;
+      padding: 10px;
+      font-size: 16px;
+      color:#000;
+    }
+
+    footer a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    #hero-intro {
+      font-size: 20px;
+      margin-top: 30px;
+      font-weight: 400;
+      text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.6);
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="intro">
+    <p id="hero-intro">Meet the heroes! Slide through to learn more about them!</p>
+  </div>
+
+  <div class="slider">
+    <div class="slides">
+      <div class="slide" data-bg="spiderman.png" data-name="Spider-Man" data-description="the wall-crawling hero from New York!">
+        <img src="spiderman.png" alt="Spider-Man">
+      </div>
+      <div class="slide" data-bg="superman.png" data-name="Superman" data-description="the Man of Steel from the planet Krypton!">
+        <img src="superman.png" alt="Superman">
+      </div>
+      <div class="slide" data-bg="batman.jpg" data-name="Batman" data-description=" the Dark Knight, protector of Gotham City!">
+        <img src="batman.jpg" alt="Batman">
+      </div>
+    </div>
+    <button class="prev" onclick="changeSlide(-1)">&#10094;</button>
+    <button class="next" onclick="changeSlide(1)">&#10095;</button>
+  </div>
+
+  <footer>
+    <p>Created by Charles Pura</p>
+    <p>
+      <a href="https://github.com/charlespura" target="_blank">@charlespura GitHub</a> |
+      <a href="https://linkedin.com/in/charlespura" target="_blank">@charlespura LinkedIn</a>
+    </p>
+  </footer>
+
+  <script>
+    let currentIndex = 0;
+    const slides = document.querySelector('.slides');
+    const totalSlides = document.querySelectorAll('.slide').length;
+    const body = document.body;
+    const heroIntro = document.getElementById('hero-intro'); // Reference to the paragraph for hero intro
+
+    // Update the full-screen background, the image name, and the hero description
+    function updateBackground() {
+      const currentSlide = document.querySelectorAll('.slide')[currentIndex];
+      const newBackground = currentSlide.getAttribute('data-bg');
+      const newName = currentSlide.getAttribute('data-name');
+      const newDescription = currentSlide.getAttribute('data-description');
+      body.style.backgroundImage = `url(${newBackground})`;
+      heroIntro.textContent = `${newName}: ${newDescription}`;
+      heroIntro.style.animation = "slideIn 1s ease-in-out";
+    }
+
+    // Change the slide (previous or next)
+    function changeSlide(direction) {
+      currentIndex = (currentIndex + direction + totalSlides) % totalSlides;
+      slides.style.transform = `translateX(-${currentIndex * 220}px)`;  // Slide one image at a time
+      updateBackground();
+    }
+
+    // Auto slide every 3 seconds
+    setInterval(() => changeSlide(1), 3000);
+
+    // Initialize background image and hero description
+    updateBackground();
+  </script>
+</body>
+</html>
